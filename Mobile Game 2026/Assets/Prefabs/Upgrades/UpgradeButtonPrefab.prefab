@@ -172,7 +172,7 @@ MonoBehaviour:
   playSound: 1
   vibrate: 1
   scaleOnSelect: 1
-  staySelected: 0
+  staySelected: 1
   scaleMultiplier: 1.25
   scaleTime: 0.1
   changeColorOnSelect: 1

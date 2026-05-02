@@ -48,6 +48,13 @@ public class OrbitManager : MonoBehaviour
         _globalOrbitAngle += direction * _playerManager.GetSpeed() * Time.deltaTime;
     }
 
+    public void RefreshOrbiters()
+    {
+        foreach (Orbit orbit in _orbits)
+            orbit.UpdateOrbiters();
+    }
+
+
     private void PlayerDied()
     {
         foreach(Orbit orbit in _orbits)

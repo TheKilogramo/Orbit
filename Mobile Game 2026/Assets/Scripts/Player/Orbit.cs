@@ -65,25 +65,21 @@ public class Orbit : MonoBehaviour
     public void UpdateOrbiters()
     {
         int targetCount = _playerData.GetOrbitersPerOrbit();
-
-        if (_orbiters.Count >= targetCount) return;
-
-        int orbitersNeeded = targetCount - _orbiters.Count;
-
-        for (int i = 0; i < orbitersNeeded; i++)
+        if (_orbiters.Count < targetCount)
         {
-            AddOrbiter();
+            int orbitersNeeded = targetCount - _orbiters.Count;
+            for (int i = 0; i < orbitersNeeded; i++)
+                AddOrbiter();
         }
 
+        // Move this OUTSIDE the spawn block so it always runs
         Vector3 size = _playerData.GetOrbiterSize();
-
         for (int i = 0; i < _orbiters.Count; i++)
-        {
             _orbiters[i].transform.localScale = size;
-        }
 
         ArrangeOrbiters();
     }
+
     private void AddOrbiter()
     {
         GameObject obj = Instantiate(_orbiterPrefab, transform);

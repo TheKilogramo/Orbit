@@ -100,25 +100,35 @@ public class PlayerManager : MonoBehaviour
 
     private void Move()
     {
-        Vector3 worldPos = Camera.main.ScreenToWorldPoint(
-        new Vector3(InputManager.TouchPosition.x, InputManager.TouchPosition.y, 0f));
-        worldPos.z = 0f;
+        if (!InputManager.TouchIsHeld) return;
 
-        transform.position = worldPos;
+        // Convert screen-space delta to world-space delta
+        Vector3 currentScreenPos = new Vector3(
+            InputManager.TouchPosition.x,
+            InputManager.TouchPosition.y, 0f);
+        Vector3 previousScreenPos = new Vector3(
+            InputManager.TouchPosition.x - InputManager.TouchDelta.x,
+            InputManager.TouchPosition.y - InputManager.TouchDelta.y, 0f);
+
+        Vector3 worldCurrent = Camera.main.ScreenToWorldPoint(currentScreenPos);
+        Vector3 worldPrevious = Camera.main.ScreenToWorldPoint(previousScreenPos);
+
+        worldCurrent.z = 0f;
+        worldPrevious.z = 0f;
+
+        Vector3 worldDelta = worldCurrent - worldPrevious;
+        transform.position += worldDelta;
     }
 
     private void ClampToScreen()
     {
-        // Get world-area bounds
         float halfW = WorldAreaManager.Instance.playWidth * 0.5f;
         float halfH = WorldAreaManager.Instance.playHeight * 0.5f;
 
         Vector3 camPos = WorldAreaManager.Instance.center;
 
-        // Calculate clamped position
         float minX = camPos.x - halfW;
         float maxX = camPos.x + halfW;
-
         float minY = camPos.y - halfH;
         float maxY = camPos.y + halfH;
 
@@ -154,6 +164,11 @@ public class PlayerManager : MonoBehaviour
                 AddOrbit();
             }
         }
+
+        _orbitManager.RefreshOrbiters();
+
+        if (upgrade.IsSpecial)
+            EffectsManager.Instance.ApplyEffect(upgrade.EffectID);
     }
 
     public void AddOrbit()

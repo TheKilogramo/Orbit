@@ -20,4 +20,30 @@ public class Upgrade : ScriptableObject
     [Header("Rules")]
     [Tooltip("Maximum amount of times this upgrade can show up")]
     public int MaxShowTimes = 5;
+
+
+    [Header("Evolution Settings")]
+    public BuffTag[] Tags; // what this upgrade "counts as"
+    public BuffTag[] RequiredTags; //what must already be owned (one of each)
+    public int RequiredTagCount = 0; //minimum unique tag types owned
+    [Space]
+    public bool IsSpecial = false;
+    public SpecialEffect EffectID = SpecialEffect.None;
+
+
+    public enum BuffTag { ExtraOrbiter, ExtraOrbit, DamageUp, SpeedUp, SizeUp }
+    public enum SpecialEffect
+    {
+        None,
+        Saturn, SaturnAdvanced,
+        Meteor, MeteorAdvanced,
+        Electric, ElectricAdvanced,
+        IceGiant, IceGiantAdvanced,
+        SolarFlare, SolarFlareAdvanced,
+        Comet, CometAdvanced,
+        Gravity, GravityAdvanced,
+        Lightsaber, LightsaberAdvanced,
+        Smash, SmashAdvanced,
+        FrozenLightning, FrozenLightningAdvanced
+    }
 }

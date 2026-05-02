@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
+using static Upgrade;
 
 public class UpgradesManager : MonoBehaviour
 {
@@ -9,7 +11,8 @@ public class UpgradesManager : MonoBehaviour
 
     [Header("Upgrades")]
     [SerializeField] private List<Upgrade> _possibleUpgrades;
-
+    
+    private Dictionary<BuffTag, int> _ownedTags = new();
     private Dictionary<Upgrade, int> _upgradeShowCounts = new();
 
     [Header("UI / Audio")]
@@ -47,6 +50,16 @@ public class UpgradesManager : MonoBehaviour
     {
         PlayerManager.Instance.OnPlayerDied -= PlayerDied;
         PlayerManager.Instance.OnPlayerLevelUp -= PlayerLeveledUp;
+    }
+
+    private void Update()
+    {
+/*        var log = "Owned Tags:\n";
+        foreach (var kvp in _ownedTags)
+        {
+            log += $"{kvp.Key}: {kvp.Value}\n";
+        }
+        Debug.Log(log);*/
     }
 
     private void PlayerDied()
@@ -95,8 +108,22 @@ public class UpgradesManager : MonoBehaviour
         foreach (var upg in _possibleUpgrades)
         {
             _upgradeShowCounts.TryGetValue(upg, out int timesShown);
-            if (timesShown < upg.MaxShowTimes)
-                pool.Add(upg);
+            if (timesShown >= upg.MaxShowTimes) continue;
+
+            // Check all required tags are owned
+            bool eligible = true;
+            foreach (var tag in upg.RequiredTags)
+            {
+                int timesRequired = upg.RequiredTags.Count(t => t == tag);
+                _ownedTags.TryGetValue(tag, out int owned);
+                if (owned < timesRequired)
+                {
+                    eligible = false;
+                    break;
+                }
+            }
+
+            if (eligible) pool.Add(upg);
         }
 
         // pick without replacement
@@ -154,6 +181,13 @@ public class UpgradesManager : MonoBehaviour
     {
         _upgradeShowCounts.TryGetValue(upg, out int count);
         _upgradeShowCounts[upg] = count + 1;
+
+        // Track owned tags
+        foreach (var tag in upg.Tags)
+        {
+            _ownedTags.TryGetValue(tag, out int owned);
+            _ownedTags[tag] = owned + 1;
+        }
 
         PlayerManager.Instance.ApplyUpgrade(upg);
         CloseMenu();

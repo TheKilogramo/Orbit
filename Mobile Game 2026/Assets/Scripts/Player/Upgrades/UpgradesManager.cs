@@ -1,0 +1,204 @@
+using System.Collections;
+using System.Collections.Generic;
+using TMPro;
+using UnityEngine;
+
+public class UpgradesManager : MonoBehaviour
+{
+    public static UpgradesManager Instance;
+
+    [Header("Upgrades")]
+    [SerializeField] private List<Upgrade> _possibleUpgrades;
+
+    private Dictionary<Upgrade, int> _upgradeShowCounts = new();
+
+    [Header("UI / Audio")]
+    [SerializeField] private GameObject _panel;
+    [SerializeField] private CanvasGroup _panelGroup;
+    public TextMeshProUGUI DescriptionText;
+    public TextMeshProUGUI NameText;
+    [SerializeField] private Transform _upgradeButtonsParent;
+    [SerializeField] private GameObject _upgradeButtonPrefab;
+    [SerializeField] private int _choices = 3;
+    [Space]
+    [SerializeField] private AudioClip _upgradesShowClip;
+    [SerializeField] private AudioClip _upgradeChosenClip;
+    [SerializeField] private float _fadeDuration = 0.1f;
+
+    [HideInInspector] public Upgrade CurrentSelection;
+    private Coroutine _fadeRoutine;
+
+
+    private void Awake()
+    {
+        Instance = this;
+
+        if (_panel)
+            _panel.SetActive(false);
+    }
+
+    private void Start()
+    {
+        PlayerManager.Instance.OnPlayerDied += PlayerDied;
+        PlayerManager.Instance.OnPlayerLevelUp += PlayerLeveledUp;
+    }
+
+    private void OnDisable()
+    {
+        PlayerManager.Instance.OnPlayerDied -= PlayerDied;
+        PlayerManager.Instance.OnPlayerLevelUp -= PlayerLeveledUp;
+    }
+
+    private void PlayerDied()
+    {
+        _panel.SetActive(false);
+        Destroy(this);
+    }
+
+    public void PlayerLeveledUp()
+    {
+        StartCoroutine(ShowUpgradesPanel());
+    }
+
+    #region UI
+
+    private IEnumerator ShowUpgradesPanel()
+    {
+        yield return new WaitForSecondsRealtime(.55f);
+
+        //build choices first, before touching time scale or UI
+        int choiceCount = CreateUpgradeChoices();
+        if (choiceCount == 0)
+            yield break;
+
+        PauseMenuManager.Instance.PauseButton.SetActive(false);
+        Time.timeScale = 0f;
+
+        _panel.SetActive(true);
+        _panelGroup.alpha = 0f;
+        _panelGroup.interactable = false;
+        _panelGroup.blocksRaycasts = false;
+
+        AudioPlayer.PlayOneShot(_upgradesShowClip);
+
+        yield return StartCoroutine(FadeCanvas(0f, 1f));
+    }
+
+    private int CreateUpgradeChoices()
+    {
+        // clear existing buttons
+        foreach (Transform child in _upgradeButtonsParent)
+            Destroy(child.gameObject);
+
+        // build pool of eligible upgrades
+        List<Upgrade> pool = new();
+        foreach (var upg in _possibleUpgrades)
+        {
+            _upgradeShowCounts.TryGetValue(upg, out int timesShown);
+            if (timesShown < upg.MaxShowTimes)
+                pool.Add(upg);
+        }
+
+        // pick without replacement
+        List<Upgrade> selected = new();
+        while (selected.Count < _choices && pool.Count > 0)
+        {
+            int idx = Random.Range(0, pool.Count);
+            selected.Add(pool[idx]);
+            pool.RemoveAt(idx);
+        }
+
+        // nothing available at all
+        if (selected.Count == 0)
+            return 0;
+
+        // create UI buttons
+        foreach (var upg in selected)
+        {
+            var obj = Instantiate(_upgradeButtonPrefab, _upgradeButtonsParent);
+            obj.GetComponent<UpgradeButton>().Setup(upg);
+        }
+
+        CurrentSelection = null;
+        NameText.text = "";
+        DescriptionText.text = "";
+
+        StartCoroutine(SelectMiddleUpgrade());
+
+        return selected.Count;
+    }
+
+    IEnumerator SelectMiddleUpgrade()
+    {
+        yield return null; //skip 1 frame
+
+        //auto select the center button
+        if (_upgradeButtonsParent.childCount > 0)
+        {
+            int mid = _upgradeButtonsParent.childCount / 2;
+            var btn = _upgradeButtonsParent.GetChild(mid).GetComponent<UpgradeButton>();
+            btn.Select();
+        }
+    }
+
+    public void OnSelectPressed()
+    {
+        if (CurrentSelection == null)
+            return; // nothing picked yet
+
+        ApplyUpgrade(CurrentSelection);
+    }
+
+
+    public void ApplyUpgrade(Upgrade upg)
+    {
+        _upgradeShowCounts.TryGetValue(upg, out int count);
+        _upgradeShowCounts[upg] = count + 1;
+
+        PlayerManager.Instance.ApplyUpgrade(upg);
+        CloseMenu();
+    }
+
+    public void CloseMenu()
+    {
+        Time.timeScale = 1f;
+
+        if (_fadeRoutine != null)
+            StopCoroutine(_fadeRoutine);
+
+        _fadeRoutine = StartCoroutine(FadeOutAndClose());
+
+        AudioPlayer.PlayOneShot(_upgradeChosenClip, .5f);
+    }
+
+    private IEnumerator FadeOutAndClose()
+    {
+        yield return StartCoroutine(FadeCanvas(1f, 0f));
+
+        _panel.SetActive(false);
+        _fadeRoutine = null;
+
+        PauseMenuManager.Instance.PauseButton.SetActive(true);
+    }
+
+    private IEnumerator FadeCanvas(float from, float to)
+    {
+        float t = 0f;
+
+        _panelGroup.alpha = from;
+
+        while (t < _fadeDuration)
+        {
+            t += Time.unscaledDeltaTime;
+            _panelGroup.alpha = Mathf.Lerp(from, to, t / _fadeDuration);
+            yield return null;
+        }
+
+        _panelGroup.alpha = to;
+
+        _panelGroup.interactable = (to == 1f);
+        _panelGroup.blocksRaycasts = (to == 1f);
+    }
+
+    #endregion
+}

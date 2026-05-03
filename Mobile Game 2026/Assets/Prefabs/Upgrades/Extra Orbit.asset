@@ -21,3 +21,9 @@ MonoBehaviour:
   ExtraOrbiters: 0
   ExtraOrbits: 1
   MaxShowTimes: 3
+  Tags: 01000000
+  RequiredTagCount: 0
+  IsSpecial: 0
+  EffectID: 0
+  RequiredTags: 
+  RequiredSpecials: 

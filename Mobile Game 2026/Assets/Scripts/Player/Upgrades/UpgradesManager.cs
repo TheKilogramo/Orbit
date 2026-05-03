@@ -11,7 +11,8 @@ public class UpgradesManager : MonoBehaviour
 
     [Header("Upgrades")]
     [SerializeField] private List<Upgrade> _possibleUpgrades;
-    
+    [SerializeField] private List<SpecialEffect> _ownedSpecials = new();
+
     private Dictionary<BuffTag, int> _ownedTags = new();
     private Dictionary<Upgrade, int> _upgradeShowCounts = new();
 
@@ -99,23 +100,36 @@ public class UpgradesManager : MonoBehaviour
 
     private int CreateUpgradeChoices()
     {
-        // clear existing buttons
         foreach (Transform child in _upgradeButtonsParent)
             Destroy(child.gameObject);
 
-        // build pool of eligible upgrades
         List<Upgrade> pool = new();
         foreach (var upg in _possibleUpgrades)
         {
+            // check max show times
             _upgradeShowCounts.TryGetValue(upg, out int timesShown);
             if (timesShown >= upg.MaxShowTimes) continue;
 
-            // Check all required tags are owned
+            // check required stat tags
             bool eligible = true;
             foreach (var tag in upg.RequiredTags)
             {
                 int timesRequired = upg.RequiredTags.Count(t => t == tag);
                 _ownedTags.TryGetValue(tag, out int owned);
+                if (owned < timesRequired)
+                {
+                    eligible = false;
+                    break;
+                }
+            }
+
+            if (!eligible) continue;
+
+            // check required specials
+            foreach (var special in upg.RequiredSpecials)
+            {
+                int timesRequired = upg.RequiredSpecials.Count(s => s == special);
+                int owned = _ownedSpecials.Count(s => s == special);
                 if (owned < timesRequired)
                 {
                     eligible = false;
@@ -135,11 +149,9 @@ public class UpgradesManager : MonoBehaviour
             pool.RemoveAt(idx);
         }
 
-        // nothing available at all
         if (selected.Count == 0)
             return 0;
 
-        // create UI buttons
         foreach (var upg in selected)
         {
             var obj = Instantiate(_upgradeButtonPrefab, _upgradeButtonsParent);
@@ -154,6 +166,7 @@ public class UpgradesManager : MonoBehaviour
 
         return selected.Count;
     }
+
 
     IEnumerator SelectMiddleUpgrade()
     {
@@ -182,12 +195,16 @@ public class UpgradesManager : MonoBehaviour
         _upgradeShowCounts.TryGetValue(upg, out int count);
         _upgradeShowCounts[upg] = count + 1;
 
-        // Track owned tags
+        // track stat tags
         foreach (var tag in upg.Tags)
         {
             _ownedTags.TryGetValue(tag, out int owned);
             _ownedTags[tag] = owned + 1;
         }
+
+        // track owned specials
+        if (upg.IsSpecial)
+            _ownedSpecials.Add(upg.EffectID);
 
         PlayerManager.Instance.ApplyUpgrade(upg);
         CloseMenu();

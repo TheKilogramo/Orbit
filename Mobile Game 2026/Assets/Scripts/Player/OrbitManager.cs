@@ -34,16 +34,6 @@ public class OrbitManager : MonoBehaviour
 
     private void Update()
     {
-        if (Keyboard.current.eKey.wasPressedThisFrame)
-        {
-            AddOrbit();
-        }
-
-        if (Keyboard.current.fKey.wasPressedThisFrame)
-        {
-            AddOrbiter();
-        }
-
         float direction = _rotateClockwise ? -1f : 1f;
         _globalOrbitAngle += direction * _playerManager.GetSpeed() * Time.deltaTime;
     }

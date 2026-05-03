@@ -22,14 +22,15 @@ public class Upgrade : ScriptableObject
     public int MaxShowTimes = 5;
 
 
-    [Header("Evolution Settings")]
+    [Header("Base Buff Settings")]
     public BuffTag[] Tags; // what this upgrade "counts as"
-    public BuffTag[] RequiredTags; //what must already be owned (one of each)
-    public int RequiredTagCount = 0; //minimum unique tag types owned
     [Space]
     public bool IsSpecial = false;
     public SpecialEffect EffectID = SpecialEffect.None;
 
+    [Header("Prerequisites")]
+    public BuffTag[] RequiredTags;
+    public SpecialEffect[] RequiredSpecials;
 
     public enum BuffTag { ExtraOrbiter, ExtraOrbit, DamageUp, SpeedUp, SizeUp }
     public enum SpecialEffect

@@ -5,105 +5,83 @@ using static Upgrade;
 public class EffectsManager : MonoBehaviour
 {
     public static EffectsManager Instance;
+    [SerializeField] private List<EffectBase> _activeEffects = new();
+
+    [Header("Effects")]
+    [SerializeField] private EffectBase _saturn;
+    [SerializeField] private EffectBase _saturnAdvanced;
+    [SerializeField] private EffectBase _meteor;
+    [SerializeField] private EffectBase _meteorAdvanced;
+    [SerializeField] private EffectBase _electric;
+    [SerializeField] private EffectBase _electricAdvanced;
+    [SerializeField] private EffectBase _iceGiant;
+    [SerializeField] private EffectBase _iceGiantAdvanced;
+    [SerializeField] private EffectBase _solarFlare;
+    [SerializeField] private EffectBase _solarFlareAdvanced;
+    [SerializeField] private EffectBase _comet;
+    [SerializeField] private EffectBase _cometAdvanced;
+    [SerializeField] private EffectBase _gravity;
+    [SerializeField] private EffectBase _gravityAdvanced;
+    [SerializeField] private EffectBase _lightsaber;
+    [SerializeField] private EffectBase _lightsaberAdvanced;
+    [SerializeField] private EffectBase _smash;
+    [SerializeField] private EffectBase _smashAdvanced;
+    [SerializeField] private EffectBase _frozenLighting;
+    [SerializeField] private EffectBase _frozenLightingAdvanced;
 
     private void Awake()
     {
         Instance = this;
     }
 
+    private void Update()
+    {
+        foreach (var effect in _activeEffects)
+            effect.OnUpdate();
+    }
+
     public void ApplyEffect(SpecialEffect effect)
     {
         switch (effect)
         {
-            case SpecialEffect.Saturn: ApplySaturn(); break;
-            case SpecialEffect.SaturnAdvanced: ApplySaturnAdvanced(); break;
-
-            case SpecialEffect.Meteor: ApplyMeteor(); break;
-            case SpecialEffect.MeteorAdvanced: ApplyMeteorAdvanced(); break;
-
-            case SpecialEffect.Electric: ApplyElectric(); break;
-            case SpecialEffect.ElectricAdvanced: ApplyElectricAdvanced(); break;
-
-            case SpecialEffect.IceGiant: ApplyIceGiant(); break;
-            case SpecialEffect.IceGiantAdvanced: ApplyIceGiantAdvanced(); break;
-
-            case SpecialEffect.SolarFlare: ApplySolarFlare(); break;
-            case SpecialEffect.SolarFlareAdvanced: ApplySolarFlareAdvanced(); break;
-
-            case SpecialEffect.Comet: ApplyComet(); break;
-            case SpecialEffect.CometAdvanced: ApplyCometAdvanced(); break;
-
-            case SpecialEffect.Gravity: ApplyGravity(); break;
-            case SpecialEffect.GravityAdvanced: ApplyGravityAdvanced(); break;
-
-            case SpecialEffect.Lightsaber: ApplyLightsaber(); break;
-            case SpecialEffect.LightsaberAdvanced: ApplyLightsaberAdvanced(); break;
-
-            case SpecialEffect.Smash: ApplySmash(); break;
-            case SpecialEffect.SmashAdvanced: ApplySmashAdvanced(); break;
-
-            case SpecialEffect.FrozenLightning: ApplyFrozenLightning(); break;
-            case SpecialEffect.FrozenLightningAdvanced: ApplyFrozenLightningAdvanced(); break;
+            case SpecialEffect.Saturn: Activate(_saturn); break;
+            case SpecialEffect.SaturnAdvanced: Upgrade(_saturn, _saturnAdvanced); break;
+            case SpecialEffect.Meteor: Activate(_meteor); break;
+            case SpecialEffect.MeteorAdvanced: Upgrade(_meteor, _meteorAdvanced); break;
+            case SpecialEffect.Electric: Activate(_electric); break;
+            case SpecialEffect.ElectricAdvanced: Upgrade(_electric, _electricAdvanced); break;
+            case SpecialEffect.IceGiant: Activate(_iceGiant); break;
+            case SpecialEffect.IceGiantAdvanced: Upgrade(_iceGiant, _iceGiantAdvanced); break;
+            case SpecialEffect.SolarFlare: Activate(_solarFlare); break;
+            case SpecialEffect.SolarFlareAdvanced: Upgrade(_solarFlare, _solarFlareAdvanced); break;
+            case SpecialEffect.Comet: Activate(_comet); break;
+            case SpecialEffect.CometAdvanced: Upgrade(_comet, _cometAdvanced); break;
+            case SpecialEffect.Gravity: Activate(_gravity); break;
+            case SpecialEffect.GravityAdvanced: Upgrade(_gravity, _gravityAdvanced); break;
+            case SpecialEffect.Lightsaber: Activate(_lightsaber); break;
+            case SpecialEffect.LightsaberAdvanced: Upgrade(_lightsaber, _lightsaberAdvanced); break;
+            case SpecialEffect.Smash: Activate(_smash); break;
+            case SpecialEffect.SmashAdvanced: Upgrade(_smash, _smashAdvanced); break;
+            case SpecialEffect.FrozenLightning: Activate(_frozenLighting); break;
+            case SpecialEffect.FrozenLightningAdvanced: Upgrade(_frozenLighting, _frozenLightingAdvanced); break;
         }
     }
 
-    // ─── Saturn ───────────────────────────────────────────
-    // Medium: debris around orbit that deals small damage
-    private void ApplySaturn() { }
-    // Advanced: 
-    private void ApplySaturnAdvanced() { }
+    private void Activate(EffectBase effect)
+    {
+        _activeEffects.Add(effect);
+        effect.Initialize();
+    }
 
-    // ─── Meteor ───────────────────────────────────────────
-    // Medium: enemies set on fire on hit
-    private void ApplyMeteor() { }
-    // Advanced: 
-    private void ApplyMeteorAdvanced() { }
+    private void Upgrade(EffectBase medium, EffectBase advanced)
+    {
+        if (_activeEffects.Contains(medium))
+        {
+            medium.Disable();
+            _activeEffects.Remove(medium);
+        }
 
-    // ─── Electric ─────────────────────────────────────────
-    // Medium: enemies chain lightning when hit
-    private void ApplyElectric() { }
-    // Advanced: 
-    private void ApplyElectricAdvanced() { }
-
-    // ─── Ice Giant ────────────────────────────────────────
-    // Medium: enemies get slowed on hit
-    private void ApplyIceGiant() { }
-    // Advanced: 
-    private void ApplyIceGiantAdvanced() { }
-
-    // ─── Solar Flare ──────────────────────────────────────
-    // Medium: orbiters occasionally emit bursts of damage
-    private void ApplySolarFlare() { }
-    // Advanced: 
-    private void ApplySolarFlareAdvanced() { }
-
-    // ─── Comet ────────────────────────────────────────────
-    // Medium: orbits shoot out comets every once in a while
-    private void ApplyComet() { }
-    // Advanced: 
-    private void ApplyCometAdvanced() { }
-
-    // ─── Gravity ──────────────────────────────────────────
-    // Medium: orbiters pull enemies towards them
-    private void ApplyGravity() { }
-    // Advanced: 
-    private void ApplyGravityAdvanced() { }
-
-    // ─── Lightsaber ───────────────────────────────────────
-    // Medium: orbit turns solid and deals damage
-    private void ApplyLightsaber() { }
-    // Advanced: 
-    private void ApplyLightsaberAdvanced() { }
-
-    // ─── Smash ────────────────────────────────────────────
-    // Medium: destroying enemies smashes them into debris that deals damage
-    private void ApplySmash() { }
-    // Advanced: 
-    private void ApplySmashAdvanced() { }
-
-    // ─── Frozen Lightning ─────────────────────────────────
-    // Medium: chain slow (slows less than ice giant)
-    private void ApplyFrozenLightning() { }
-    // Advanced: 
-    private void ApplyFrozenLightningAdvanced() { }
+        _activeEffects.Add(advanced);
+        advanced.Initialize();
+    }
 }

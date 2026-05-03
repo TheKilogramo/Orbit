@@ -94,6 +94,9 @@ public class PlayerManager : MonoBehaviour
         Move();
         ClampToScreen();
         UpdateXPVisuals();
+
+        if (Keyboard.current.eKey.isPressed) AddXP(20 * _level);
+        if (Keyboard.current.rKey.isPressed) AddXP(200 * _level);
     }
 
     #region Movement

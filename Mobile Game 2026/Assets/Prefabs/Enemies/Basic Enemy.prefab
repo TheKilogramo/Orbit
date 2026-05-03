@@ -5212,6 +5212,7 @@ Transform:
   - {fileID: 1847754061875981718}
   - {fileID: 6194629619756463321}
   - {fileID: 90727973310276122}
+  - {fileID: 2020917189756900028}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7180965203199034750
@@ -5233,6 +5234,8 @@ MonoBehaviour:
   SpriteRendr: {fileID: 9097907379880086025}
   _fireParticles: {fileID: 6910491476994100928}
   _coldParticles: {fileID: 816019250995189763}
+  _electricParticles: {fileID: 1592863358763903141}
+  _sfxElectricity: {fileID: 8300000, guid: 579a6148fc255f94383e1bf1fcc5d79d, type: 3}
   _speed: 1.5
   _hitParticles: {fileID: 6297305552449814345}
   _deathParticlesPrefab: {fileID: 7931432138833068871, guid: f244a16b73931374b8a8d30f89e3eb44, type: 3}
@@ -5369,6 +5372,73 @@ Transform:
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 25921361884549654, guid: 43d0a2f6a6018834d8491c961baac56e, type: 3}
   m_PrefabInstance: {fileID: 796858374263917077}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &2479250224187900205
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 7955489266303816302}
+    m_Modifications:
+    - target: {fileID: 4495627667537122193, guid: 0d96032a6be328b48bd8cab219e006ef, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4495627667537122193, guid: 0d96032a6be328b48bd8cab219e006ef, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.002
+      objectReference: {fileID: 0}
+    - target: {fileID: 4495627667537122193, guid: 0d96032a6be328b48bd8cab219e006ef, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4495627667537122193, guid: 0d96032a6be328b48bd8cab219e006ef, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4495627667537122193, guid: 0d96032a6be328b48bd8cab219e006ef, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4495627667537122193, guid: 0d96032a6be328b48bd8cab219e006ef, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4495627667537122193, guid: 0d96032a6be328b48bd8cab219e006ef, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4495627667537122193, guid: 0d96032a6be328b48bd8cab219e006ef, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 4495627667537122193, guid: 0d96032a6be328b48bd8cab219e006ef, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4495627667537122193, guid: 0d96032a6be328b48bd8cab219e006ef, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8313338651951278289, guid: 0d96032a6be328b48bd8cab219e006ef, type: 3}
+      propertyPath: m_Name
+      value: ElectricityParticles
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 0d96032a6be328b48bd8cab219e006ef, type: 3}
+--- !u!198 &1592863358763903141 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 3779342764338882952, guid: 0d96032a6be328b48bd8cab219e006ef, type: 3}
+  m_PrefabInstance: {fileID: 2479250224187900205}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &2020917189756900028 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4495627667537122193, guid: 0d96032a6be328b48bd8cab219e006ef, type: 3}
+  m_PrefabInstance: {fileID: 2479250224187900205}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5239454530240226710
 PrefabInstance:

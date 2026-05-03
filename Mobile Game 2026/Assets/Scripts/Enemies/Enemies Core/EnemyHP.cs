@@ -15,6 +15,9 @@ public class EnemyHP : MonoBehaviour
     public SpriteRenderer SpriteRendr;
     [SerializeField] private ParticleSystem _fireParticles;
     [SerializeField] private ParticleSystem _coldParticles;
+    [SerializeField] private ParticleSystem _electricParticles;
+    [Space]
+    [SerializeField] private AudioClip _sfxElectricity;
 
     private float _fireDamage;
     private bool _onFire = false;
@@ -57,6 +60,23 @@ public class EnemyHP : MonoBehaviour
     {
         if (!_canBeDamaged) return;
         _hp -= damage;
+    }
+
+    public void SetEffect(SpecialEffect effect)
+    {
+        switch (effect)
+        {
+            case SpecialEffect.Meteor:
+
+                break;
+            case SpecialEffect.IceGiant:
+
+                break;
+            case SpecialEffect.Electric:
+                _electricParticles.Play();
+                AudioPlayer.PlayBulkOneShot(_sfxElectricity, 0.05f);
+                break;
+        }
     }
 
     public void SetOnFire(float duration, float damagePerSecond)

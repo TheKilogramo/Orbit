@@ -33,18 +33,20 @@ public class Upgrade : ScriptableObject
     public SpecialEffect[] RequiredSpecials;
 
     public enum BuffTag { ExtraOrbiter, ExtraOrbit, DamageUp, SpeedUp, SizeUp }
-    public enum SpecialEffect
-    {
-        None,
-        Saturn, SaturnAdvanced,
-        Meteor, MeteorAdvanced,
-        Electric, ElectricAdvanced,
-        IceGiant, IceGiantAdvanced,
-        SolarFlare, SolarFlareAdvanced,
-        Comet, CometAdvanced,
-        Gravity, GravityAdvanced,
-        Lightsaber, LightsaberAdvanced,
-        Smash, SmashAdvanced,
-        FrozenLightning, FrozenLightningAdvanced
-    }
+
+}
+
+public enum SpecialEffect
+{
+    None,
+    Saturn, SaturnAdvanced,
+    Meteor, MeteorAdvanced,
+    Electric, ElectricAdvanced,
+    IceGiant, IceGiantAdvanced,
+    SolarFlare, SolarFlareAdvanced,
+    Comet, CometAdvanced,
+    Gravity, GravityAdvanced,
+    Lightsaber, LightsaberAdvanced,
+    Smash, SmashAdvanced,
+    FrozenLightning, FrozenLightningAdvanced
 }

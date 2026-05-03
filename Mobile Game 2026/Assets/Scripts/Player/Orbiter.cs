@@ -1,8 +1,11 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Orbiter : MonoBehaviour
 {
+    public event Action<EnemyHP> OnHit;
+
     [Header("Damage")]
     public float _damageInterval = 0.25f;
     private Dictionary<EnemyHP, float> _timers = new();
@@ -12,6 +15,7 @@ public class Orbiter : MonoBehaviour
     [Header("Effects")]
     [SerializeField] private SpriteRenderer _sr;
     [SerializeField] private ParticleSystem _meteorParticles;
+    [SerializeField] private ParticleSystem _electricityParticles;
 
     private bool _meteorActive = false;
     private float _fireDamage;
@@ -27,6 +31,22 @@ public class Orbiter : MonoBehaviour
         _playerData = playerData;
     }
 
+    public void SetEffect(SpecialEffect effect)
+    {
+        switch (effect)
+        {
+            case SpecialEffect.Meteor:
+
+                break;
+            case SpecialEffect.IceGiant:
+
+                break;
+            case SpecialEffect.Electric:
+                _electricityParticles.Play();
+                break;
+        }
+    }
+
     public void InitializeMeteor(Sprite meteorSprite, Color meteorColor, float fireDuration, float fireDamage)
     {
         _meteorActive = true;
@@ -40,7 +60,7 @@ public class Orbiter : MonoBehaviour
         if (_meteorParticles != null)
             _meteorParticles.Play();
 
-        transform.Rotate(0f, 0f, Random.Range(0f, 360f));
+        transform.Rotate(0f, 0f, UnityEngine.Random.Range(0f, 360f));
     }
 
     public void InitializeIceGiant(Sprite iceGiantSprite, Color iceGiantCOlor, float slowDuration, float slowMultiplier)
@@ -59,6 +79,7 @@ public class Orbiter : MonoBehaviour
         if (collision.TryGetComponent<EnemyHP>(out var enemyHp))
         {
             enemyHp.Damage(_playerData.GetDamage());
+            OnHit?.Invoke(enemyHp);
 
             if (_meteorActive)
                 enemyHp.SetOnFire(_fireDuration, _fireDamage);
@@ -82,6 +103,7 @@ public class Orbiter : MonoBehaviour
         if (_timers[enemyHp] >= _damageInterval)
         {
             enemyHp.Damage(_playerData.GetDamage());
+            OnHit?.Invoke(enemyHp);
 
             if (_meteorActive)
                 enemyHp.SetOnFire(_fireDuration, _fireDamage);

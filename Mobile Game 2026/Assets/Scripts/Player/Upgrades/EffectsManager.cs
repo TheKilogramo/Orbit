@@ -34,6 +34,26 @@ public class EffectsManager : MonoBehaviour
         Instance = this;
     }
 
+    private void Start()
+    {
+        foreach(EffectBase e in _activeEffects)
+        {
+            e.Initialize();
+        }
+
+        PlayerManager.Instance.OnPlayerDied += PlayerDied;
+    }
+
+    private void OnDisable()
+    {
+        PlayerManager.Instance.OnPlayerDied -= PlayerDied;
+    }
+
+    private void PlayerDied()
+    {
+        enabled = false;
+    }
+
     private void Update()
     {
         foreach (var effect in _activeEffects)

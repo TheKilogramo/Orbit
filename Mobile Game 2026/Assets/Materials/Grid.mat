@@ -26,7 +26,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _Alpha: 0.35
-    - _CameraOrthographicSize: 7.8
+    - _CameraOrthographicSize: 6
     - _FadeEnd: 30
     - _FadeStart: 15
     - _GridSize: 1.5

@@ -1,9 +1,15 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class OrbitManager : MonoBehaviour
 {
+    public static OrbitManager Instance;
+
+    public event Action<Orbiter> OnOrbiterAdded;
+    public void OrbiterAdded(Orbiter o) { OnOrbiterAdded?.Invoke(o); }
+
     [Header("Orbits")]
     [SerializeField] private GameObject _orbitPrefab;
     [SerializeField] private List<Orbit> _orbits = new List<Orbit>();
@@ -18,8 +24,12 @@ public class OrbitManager : MonoBehaviour
 
     //getters
     public float GetOrbitAngle() => _globalOrbitAngle;
+    public List<Orbit> GetOrbits() => _orbits;
 
-
+    private void Awake()
+    {
+        Instance = this;
+    }
     private void Start()
     {
         _playerManager = GetComponent<PlayerManager>();

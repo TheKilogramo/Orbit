@@ -16,6 +16,9 @@ public class Orbit : MonoBehaviour
     [SerializeField] private LineRenderer _lr;
     [SerializeField] private int _resolution = 150;
 
+    public float GetRadius() => _radius;
+    public List<Orbiter> GetOrbiters() => _orbiters;
+
     public void Initialize(OrbitManager data, PlayerManager playerData, float radius)
     {
         _orbitData = data;
@@ -30,6 +33,10 @@ public class Orbit : MonoBehaviour
         _initialized = true;
 
         UpdateOrbiters();
+    }
+    public Vector3 GetPointOnOrbit(float angle)
+    {
+        return transform.position + OrbitPoint(angle, _radius);
     }
 
     private void Update()
@@ -87,6 +94,8 @@ public class Orbit : MonoBehaviour
 
         _orbiters.Add(orbiter);
         orbiter.Initialize(_playerData);
+
+        _orbitData.OrbiterAdded(orbiter);
     }
 
     private void ArrangeOrbiters()

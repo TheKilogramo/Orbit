@@ -114,18 +114,18 @@ public class VDV : BossBase
         transform.position = p;
     }
 
-    public override void Damage(float damage)
+    public override void Damage(float damage, bool showDamagedParticles = true)
     {
         base.Damage(damage);
 
-        if (_canBeDamaged)
+        if (_canBeDamaged && showDamagedParticles)
         {
             HapticFeedback.MediumFeedback();
             AudioPlayer.PlayOneShot(_damageSound);
             _hitParticles.Play();
         }
     }
-
+        
     private void OnCornerHit()
     {
         if (_spriteRenderer.sprite == _happySprite) return;
@@ -135,7 +135,7 @@ public class VDV : BossBase
 
         _happySpriteCoroutine = StartCoroutine(ResetAngrySprite());
 
-        _velocity = _direction * (_speed * _cornerSpeedMultiplier);
+        _velocity = _velocity.normalized * (_speed * _cornerSpeedMultiplier);
     }
 
     private IEnumerator ResetAngrySprite()
@@ -148,7 +148,7 @@ public class VDV : BossBase
 
         _spriteRenderer.sprite = _angrySprite;
 
-        _velocity = _direction * _speed;
+        _velocity = _velocity.normalized * _speed;
     }
 
     private void SetRandomColor()

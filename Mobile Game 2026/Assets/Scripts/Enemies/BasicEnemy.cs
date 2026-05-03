@@ -71,10 +71,12 @@ public class BasicEnemy : EnemyHP
         Destroy(this);
     }
 
-    public override void Damage(float damage)
+    public override void Damage(float damage, bool showDamagedParticles)
     {
         base.Damage(damage);
-        _hitParticles.Play();
+
+        if(showDamagedParticles)
+            _hitParticles.Play();
     }
 
     public override void Die()

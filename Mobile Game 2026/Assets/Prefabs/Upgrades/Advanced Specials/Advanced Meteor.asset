@@ -25,4 +25,4 @@ MonoBehaviour:
   IsSpecial: 1
   EffectID: 4
   RequiredTags: 00000000000000000200000002000000
-  RequiredSpecials: 04000000
+  RequiredSpecials: 03000000

@@ -265,28 +265,6 @@ Camera:
   m_CorrespondingSourceObject: {fileID: 4644800000317960689, guid: a0016bf94a5a10f4ebaf4fe547913eb0, type: 3}
   m_PrefabInstance: {fileID: 4943225513488362915}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &843196841 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4430367651258725113, guid: a87f0fca71794174f93505441d60a8e3, type: 3}
-  m_PrefabInstance: {fileID: 1901145704447745513}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d7dc5c6e3087ea84287767d6c4545552, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SaturnAdvancedEffect
---- !u!114 &1262035378 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7430358015243379228, guid: a87f0fca71794174f93505441d60a8e3, type: 3}
-  m_PrefabInstance: {fileID: 1901145704447745513}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d0496a47746ac642b71054725902cce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MeteorAdvancedEffect
 --- !u!1 &1457887847
 GameObject:
   m_ObjectHideFlags: 0
@@ -366,6 +344,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1758458011 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5434257503205019513, guid: a87f0fca71794174f93505441d60a8e3, type: 3}
+  m_PrefabInstance: {fileID: 1901145704447745513}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d764a240bea73084abc8108dd13086c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::IceGiantEffect
 --- !u!114 &23195558311221416
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -722,18 +711,50 @@ PrefabInstance:
       propertyPath: _debrisColors.Array.data[2].r
       value: 0.3773585
       objectReference: {fileID: 0}
+    - target: {fileID: 5434257503205019513, guid: a87f0fca71794174f93505441d60a8e3, type: 3}
+      propertyPath: _slowDuration
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5434257503205019513, guid: a87f0fca71794174f93505441d60a8e3, type: 3}
+      propertyPath: _iceGiantSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 4bbfaa2171cad68478825102a108b936, type: 3}
+    - target: {fileID: 5434257503205019513, guid: a87f0fca71794174f93505441d60a8e3, type: 3}
+      propertyPath: _slowMultiplier
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 5434257503205019513, guid: a87f0fca71794174f93505441d60a8e3, type: 3}
+      propertyPath: _iceGiantColor.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5434257503205019513, guid: a87f0fca71794174f93505441d60a8e3, type: 3}
+      propertyPath: _iceGiantColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5434257503205019513, guid: a87f0fca71794174f93505441d60a8e3, type: 3}
+      propertyPath: _iceGiantColor.g
+      value: 0.94509804
+      objectReference: {fileID: 0}
+    - target: {fileID: 5434257503205019513, guid: a87f0fca71794174f93505441d60a8e3, type: 3}
+      propertyPath: _iceGiantColor.r
+      value: 0.41960785
+      objectReference: {fileID: 0}
     - target: {fileID: 6441721156323063987, guid: a87f0fca71794174f93505441d60a8e3, type: 3}
       propertyPath: _activeEffects.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6441721156323063987, guid: a87f0fca71794174f93505441d60a8e3, type: 3}
       propertyPath: '_activeEffects.Array.data[0]'
       value: 
-      objectReference: {fileID: 843196841}
+      objectReference: {fileID: 1758458011}
     - target: {fileID: 6441721156323063987, guid: a87f0fca71794174f93505441d60a8e3, type: 3}
       propertyPath: '_activeEffects.Array.data[1]'
       value: 
-      objectReference: {fileID: 1262035378}
+      objectReference: {fileID: 1758458011}
+    - target: {fileID: 6441721156323063987, guid: a87f0fca71794174f93505441d60a8e3, type: 3}
+      propertyPath: '_activeEffects.Array.data[2]'
+      value: 
+      objectReference: {fileID: 1758458011}
     - target: {fileID: 7430358015243379228, guid: a87f0fca71794174f93505441d60a8e3, type: 3}
       propertyPath: _fireDuration
       value: 10
@@ -1797,7 +1818,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2285339628153650196, guid: 6520a1a1a61821f4189bce5ccc1c1f17, type: 3}
       propertyPath: _bossTime
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2285339628153650196, guid: 6520a1a1a61821f4189bce5ccc1c1f17, type: 3}
       propertyPath: _bossTimeBar

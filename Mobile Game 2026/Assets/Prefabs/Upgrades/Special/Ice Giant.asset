@@ -17,7 +17,7 @@ MonoBehaviour:
   UpgradeIcon: {fileID: 21300000, guid: 43a10535b58b8094f81589014eca446f, type: 3}
   DamageMultiplier: 0
   SpeedMultiplier: 0
-  SizeMultiplier: 0
+  SizeMultiplier: 0.4
   ExtraOrbiters: 0
   ExtraOrbits: 0
   MaxShowTimes: 1

@@ -6,12 +6,13 @@ public class BasicEnemy : EnemyHP
     [Header("Movement")]
     [SerializeField] private float _speed = 2f;
 
+    private float _effectiveSpeed = 2f;
+
     private const float DESPAWN_PADDING = 1f;
     private Vector3 _targetDirection;
     private Camera _mainCamera;
 
     [Header("Visuals")]
-    public SpriteRenderer SpriteRenderer;
     [SerializeField] private ParticleSystem _hitParticles;
     [SerializeField] private GameObject _deathParticlesPrefab;
     [Space]
@@ -28,6 +29,7 @@ public class BasicEnemy : EnemyHP
     private void Awake()
     {
         _mainCamera = Camera.main;
+        _effectiveSpeed = _speed;
     }
 
     private void OnEnable()
@@ -43,26 +45,26 @@ public class BasicEnemy : EnemyHP
             EnemySortManager.Instance.UnregisterEnemy(this);
     }
 
-    public void Initialize(Vector3 playerPosition, int newHp)
+    public override void Initialize(Vector3 playerPosition, int newHp)
     {
+        base.Initialize(playerPosition, newHp);
+
         _targetDirection = (playerPosition - transform.position).normalized;
         _hp = newHp;
         _maxHp = newHp;
 
         _myColor = Random.ColorHSV(0f, 1f, 1f, 1f, 1f, 1f);
-        SpriteRenderer.color = _myColor;
+        SpriteRendr.color = _myColor;
 
         ParticleSystem.MainModule main = _hitParticles.main;
         main.startColor = new ParticleSystem.MinMaxGradient(_myColor);
 
-        Vector3 currentRotation = SpriteRenderer.transform.localEulerAngles;
+        Vector3 currentRotation = SpriteRendr.transform.localEulerAngles;
         currentRotation.z = Random.Range(0f, 360f);
-        SpriteRenderer.transform.localEulerAngles = currentRotation;
+        SpriteRendr.transform.localEulerAngles = currentRotation;
 
         if (EnemySortManager.Instance)
             EnemySortManager.Instance.RegisterEnemy(this);
-
-        Initialized = true;
     }
 
     private void OnPlayerDie()
@@ -107,7 +109,10 @@ public class BasicEnemy : EnemyHP
     {
         base.Update();
 
-        transform.position += _targetDirection * _speed * Time.deltaTime;
+        if (_slowed) _effectiveSpeed = _speed * _slowMultiplier;
+        else _effectiveSpeed = _speed;
+
+        transform.position += _targetDirection * _effectiveSpeed * Time.deltaTime;
 
         CheckDespawn();
 

@@ -12,10 +12,33 @@ public class EnemyHP : MonoBehaviour
     [HideInInspector] public bool Initialized = false;
 
     [Header("Effects")]
+    public SpriteRenderer SpriteRendr;
     [SerializeField] private ParticleSystem _fireParticles;
+    [SerializeField] private ParticleSystem _coldParticles;
+
     private float _fireDamage;
     private bool _onFire = false;
     private Coroutine _fireRoutine;
+
+    protected bool _slowed = false;
+    protected float _slowMultiplier;
+    private Coroutine _slowRoutine;
+
+    public virtual void Initialize(Vector3 playerPosition, int newHp)
+    {
+        Initialized = true;
+
+        _slowed = false;
+        _onFire = false;
+
+        if (_fireRoutine != null) StopCoroutine(_fireRoutine);
+        if(_slowRoutine != null) StopCoroutine(_slowRoutine);
+
+        _fireParticles.Stop();
+        _coldParticles.Stop();
+
+        _canBeDamaged = true;
+    }
 
     public virtual void Update()
     {
@@ -62,6 +85,30 @@ public class EnemyHP : MonoBehaviour
 
         _fireRoutine = null;
     }
+
+    public virtual void Slow(float duration, float slowMultiplier)
+    {
+        if (_slowRoutine != null) StopCoroutine(_slowRoutine);
+        _slowMultiplier = slowMultiplier;
+        _slowRoutine = StartCoroutine(SlowRoutine(duration));
+    }
+
+    private IEnumerator SlowRoutine(float duration)
+    {
+        _slowed = true;
+
+        _coldParticles.Play();
+
+
+        yield return new WaitForSeconds(duration);
+
+        _slowed = false;
+        _coldParticles.Stop();
+
+        _slowRoutine = null;
+        _slowMultiplier = 0f;
+    }
+
 
     public virtual void Die() { }
 }

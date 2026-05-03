@@ -8,6 +8,7 @@ public class VDV : BossBase
     [Header("Movement")]
     [SerializeField] private Vector2 _velocity;
     [SerializeField] private float _cornerSpeedMultiplier = 1.25f;
+    private float _cornerMultiplier = 1f;
 
     [Header("Bounds")]
     [SerializeField] private float _halfWidth = 0.5f;
@@ -18,6 +19,7 @@ public class VDV : BossBase
     [SerializeField] private float _startingSpeed = 4f;
 
     private float _speed;
+    private float _effectiveSpeed;
 
     [Header("Visuals")]
     [SerializeField] private GameObject _dieParticles;
@@ -38,6 +40,8 @@ public class VDV : BossBase
     private Vector2 _direction;
     private Coroutine _happySpriteCoroutine;
 
+    private bool _isHappy = false;
+
     public override void Initialize()
     {
         base.Initialize();
@@ -50,7 +54,13 @@ public class VDV : BossBase
 
         _speed = _startingSpeed;
 
-        _velocity = _direction * _speed;
+        if (_slowed)
+            _effectiveSpeed = _speed * _slowMultiplier * _cornerMultiplier;
+        else
+            _effectiveSpeed = _speed * _cornerMultiplier;
+
+
+        _velocity = _direction * _effectiveSpeed;
         _activeMovement = true;
     }
 
@@ -60,6 +70,14 @@ public class VDV : BossBase
 
         if (!_activeMovement || WorldAreaManager.Instance == null) return;
 
+        if (_slowed)
+            _effectiveSpeed = _speed * _slowMultiplier * _cornerMultiplier;
+        else
+            _effectiveSpeed = _speed * _cornerMultiplier;
+
+            // Always recompute velocity from direction + speed so tweaking _speed works live
+            _velocity = _direction * _effectiveSpeed;
+
         transform.position += (Vector3)_velocity * Time.deltaTime;
 
         float halfPlayW = WorldAreaManager.Instance.playWidth * 0.5f;
@@ -67,7 +85,6 @@ public class VDV : BossBase
 
         float minX = WorldAreaManager.Instance.center.x - halfPlayW + _halfWidth;
         float maxX = WorldAreaManager.Instance.center.x + halfPlayW - _halfWidth;
-
         float minY = WorldAreaManager.Instance.center.y - halfPlayH + _halfHeight;
         float maxY = WorldAreaManager.Instance.center.y + halfPlayH - _halfHeight;
 
@@ -76,14 +93,14 @@ public class VDV : BossBase
         if (p.x <= minX)
         {
             p.x = minX;
-            _velocity.x = Mathf.Abs(_velocity.x);
+            _direction.x = Mathf.Abs(_direction.x);   // bounce: update direction, not velocity
             SetRandomColor();
             AudioPlayer.PlayOneShot(_pongWallHitSound);
         }
         else if (p.x >= maxX)
         {
             p.x = maxX;
-            _velocity.x = -Mathf.Abs(_velocity.x);
+            _direction.x = -Mathf.Abs(_direction.x);
             SetRandomColor();
             AudioPlayer.PlayOneShot(_pongWallHitSound);
         }
@@ -91,14 +108,14 @@ public class VDV : BossBase
         if (p.y <= minY)
         {
             p.y = minY;
-            _velocity.y = Mathf.Abs(_velocity.y);
+            _direction.y = Mathf.Abs(_direction.y);
             SetRandomColor();
             AudioPlayer.PlayOneShot(_pongWallHitSound);
         }
         else if (p.y >= maxY)
         {
             p.y = maxY;
-            _velocity.y = -Mathf.Abs(_velocity.y);
+            _direction.y = -Mathf.Abs(_direction.y);
             SetRandomColor();
             AudioPlayer.PlayOneShot(_pongWallHitSound);
         }
@@ -125,19 +142,21 @@ public class VDV : BossBase
             _hitParticles.Play();
         }
     }
-        
+
     private void OnCornerHit()
     {
-        if (_spriteRenderer.sprite == _happySprite) return;
+        if (_isHappy) return;
+        _isHappy = true;
 
         if (_happySpriteCoroutine != null)
             StopCoroutine(_happySpriteCoroutine);
 
         _happySpriteCoroutine = StartCoroutine(ResetAngrySprite());
 
-        _velocity = _velocity.normalized * (_speed * _cornerSpeedMultiplier);
+        _cornerMultiplier = _cornerSpeedMultiplier;
     }
 
+    // ResetAngrySprite — only resets its own multiplier
     private IEnumerator ResetAngrySprite()
     {
         _spriteRenderer.sprite = _happySprite;
@@ -147,8 +166,8 @@ public class VDV : BossBase
         yield return new WaitForSeconds(2.5f);
 
         _spriteRenderer.sprite = _angrySprite;
-
-        _velocity = _velocity.normalized * _speed;
+        _isHappy = false;
+        _cornerMultiplier = 1f;  // slow multiplier is untouched — still active if slowed
     }
 
     private void SetRandomColor()

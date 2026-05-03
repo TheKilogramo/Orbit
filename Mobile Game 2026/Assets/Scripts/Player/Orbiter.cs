@@ -17,6 +17,10 @@ public class Orbiter : MonoBehaviour
     private float _fireDamage;
     private float _fireDuration;
 
+    private bool _iceGiantActive = false;
+    private float _iceGiantDuration;
+    private float _iceGiantSlowMultiplier;
+
     public void Initialize(PlayerManager playerData)
     {
         _initialized = true;
@@ -27,7 +31,10 @@ public class Orbiter : MonoBehaviour
     {
         _meteorActive = true;
         _sr.sprite = meteorSprite;
-        _sr.color = meteorColor;
+
+        if(!_iceGiantActive)
+            _sr.color = meteorColor;
+
         _fireDuration = fireDuration;
         _fireDamage = fireDamage;
         if (_meteorParticles != null)
@@ -36,14 +43,28 @@ public class Orbiter : MonoBehaviour
         transform.Rotate(0f, 0f, Random.Range(0f, 360f));
     }
 
+    public void InitializeIceGiant(Sprite iceGiantSprite, Color iceGiantCOlor, float slowDuration, float slowMultiplier)
+    {
+        _iceGiantActive = true;
+
+        if (!_meteorActive) _sr.sprite = iceGiantSprite;
+        _sr.color = iceGiantCOlor;
+        _iceGiantDuration = slowDuration;
+        _iceGiantSlowMultiplier = slowMultiplier;
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (!_initialized) return;
         if (collision.TryGetComponent<EnemyHP>(out var enemyHp))
         {
             enemyHp.Damage(_playerData.GetDamage());
+
             if (_meteorActive)
                 enemyHp.SetOnFire(_fireDuration, _fireDamage);
+            if (_iceGiantActive)
+                enemyHp.Slow(_iceGiantDuration, _iceGiantSlowMultiplier);
+
             _timers[enemyHp] = 0f;
         }
     }
@@ -61,8 +82,12 @@ public class Orbiter : MonoBehaviour
         if (_timers[enemyHp] >= _damageInterval)
         {
             enemyHp.Damage(_playerData.GetDamage());
+
             if (_meteorActive)
                 enemyHp.SetOnFire(_fireDuration, _fireDamage);
+            if (_iceGiantActive)
+                enemyHp.Slow(_iceGiantDuration, _iceGiantSlowMultiplier);
+
             _timers[enemyHp] = 0f;
         }
     }

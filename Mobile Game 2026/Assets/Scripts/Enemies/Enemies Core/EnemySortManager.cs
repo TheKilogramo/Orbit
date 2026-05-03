@@ -48,15 +48,15 @@ public class EnemySortManager : MonoBehaviour
 
             int order = e.SpawnIndex * 2;
 
-            if (e.SpriteRenderer)
+            if (e.SpriteRendr)
             {
-                e.SpriteRenderer.sortingLayerName = "Enemies";
-                e.SpriteRenderer.sortingOrder = order;
+                e.SpriteRendr.sortingLayerName = "Enemies";
+                e.SpriteRendr.sortingOrder = order;
             }
 
             if (e.HpText)
             {
-                e.SpriteRenderer.sortingLayerName = "Enemies";
+                e.SpriteRendr.sortingLayerName = "Enemies";
                 e.HpText.sortingOrder = order + 1;
             }
         }

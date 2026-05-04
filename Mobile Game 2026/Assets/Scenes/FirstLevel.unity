@@ -836,7 +836,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6441721156323063987, guid: a87f0fca71794174f93505441d60a8e3, type: 3}
       propertyPath: _activeEffects.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6441721156323063987, guid: a87f0fca71794174f93505441d60a8e3, type: 3}
       propertyPath: '_activeEffects.Array.data[0]'
@@ -855,6 +855,10 @@ PrefabInstance:
       value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 6925842002738052762, guid: a87f0fca71794174f93505441d60a8e3, type: 3}
+      propertyPath: _chainDelay
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 6925842002738052762, guid: a87f0fca71794174f93505441d60a8e3, type: 3}
       propertyPath: _chainDamage
       value: 0.8
       objectReference: {fileID: 0}
@@ -863,8 +867,16 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6925842002738052762, guid: a87f0fca71794174f93505441d60a8e3, type: 3}
+      propertyPath: _lineDuration
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 6925842002738052762, guid: a87f0fca71794174f93505441d60a8e3, type: 3}
       propertyPath: _maxChainCount
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6925842002738052762, guid: a87f0fca71794174f93505441d60a8e3, type: 3}
+      propertyPath: _lightningColor.a
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6925842002738052762, guid: a87f0fca71794174f93505441d60a8e3, type: 3}
       propertyPath: _lightningColor.b
@@ -938,6 +950,46 @@ PrefabInstance:
       propertyPath: _fireDamagePerSecond
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 7693791261747118027, guid: a87f0fca71794174f93505441d60a8e3, type: 3}
+      propertyPath: _lineWidth
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7693791261747118027, guid: a87f0fca71794174f93505441d60a8e3, type: 3}
+      propertyPath: _chainDelay
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 7693791261747118027, guid: a87f0fca71794174f93505441d60a8e3, type: 3}
+      propertyPath: _chainDamage
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7693791261747118027, guid: a87f0fca71794174f93505441d60a8e3, type: 3}
+      propertyPath: _chainRadius
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7693791261747118027, guid: a87f0fca71794174f93505441d60a8e3, type: 3}
+      propertyPath: _maxChainCount
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7693791261747118027, guid: a87f0fca71794174f93505441d60a8e3, type: 3}
+      propertyPath: _lightningColor.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7693791261747118027, guid: a87f0fca71794174f93505441d60a8e3, type: 3}
+      propertyPath: _lightningColor.b
+      value: 0.4117647
+      objectReference: {fileID: 0}
+    - target: {fileID: 7693791261747118027, guid: a87f0fca71794174f93505441d60a8e3, type: 3}
+      propertyPath: _lightningColor.g
+      value: 0.9372549
+      objectReference: {fileID: 0}
+    - target: {fileID: 7693791261747118027, guid: a87f0fca71794174f93505441d60a8e3, type: 3}
+      propertyPath: _lightningColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7693791261747118027, guid: a87f0fca71794174f93505441d60a8e3, type: 3}
+      propertyPath: _lightningLinePrefab
+      value: 
+      objectReference: {fileID: 7216767381503435988, guid: 480ce7e389c167b4db0b4b3db004c63f, type: 3}
     - target: {fileID: 7975345672842975220, guid: a87f0fca71794174f93505441d60a8e3, type: 3}
       propertyPath: _debrisSize
       value: 0.07
@@ -1930,6 +1982,14 @@ PrefabInstance:
     - target: {fileID: 510739989309092410, guid: 6520a1a1a61821f4189bce5ccc1c1f17, type: 3}
       propertyPath: m_Enabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 510739989309092410, guid: 6520a1a1a61821f4189bce5ccc1c1f17, type: 3}
+      propertyPath: _hpRange.x
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 510739989309092410, guid: 6520a1a1a61821f4189bce5ccc1c1f17, type: 3}
+      propertyPath: _hpRange.y
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 510739989309092410, guid: 6520a1a1a61821f4189bce5ccc1c1f17, type: 3}
       propertyPath: _spawnRate

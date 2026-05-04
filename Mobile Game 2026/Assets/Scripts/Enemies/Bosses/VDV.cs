@@ -5,42 +5,34 @@ using UnityEngine;
 
 public class VDV : BossBase
 {
-    [Header("Movement")]
-    [SerializeField] private Vector2 _velocity;
-    [SerializeField] private float _cornerSpeedMultiplier = 1.25f;
-    private float _cornerMultiplier = 1f;
-
-    [Header("Bounds")]
+    [Header("Corner Hits")]
     [SerializeField] private float _halfWidth = 0.5f;
     [SerializeField] private float _halfHeight = 0.5f;
+    [Space]
+    [SerializeField] private float _cornerSpeedMultiplier = 1.25f;
     [SerializeField] private float _cornerDetectSize = .2f;
 
-    [Header("Settings")]
-    [SerializeField] private float _startingSpeed = 4f;
-
-    private float _speed;
-    private float _effectiveSpeed;
+    //movement
+    private float _finalSpeed;
+    private Vector2 _velocity;
+    private bool _isHappy = false;
 
     [Header("Visuals")]
-    [SerializeField] private GameObject _dieParticles;
-    [SerializeField] private SpriteRenderer _spriteRenderer;
     [SerializeField] private Sprite _angrySprite;
     [SerializeField] private Sprite _happySprite;
     [SerializeField] private ParticleSystem _confettiParticles;
     [SerializeField] private ParticleSystem _hitParticles;
     [SerializeField] private AudioClip _celebrationSound;
     [SerializeField] private AudioClip _pongWallHitSound;
-    [SerializeField] private AudioClip _dieSound;
-    [SerializeField] private AudioClip _dieSound2;
+    [SerializeField] private AudioClip _additionalDeathSound;
     [SerializeField] private AudioClip _spawnSound;
     [SerializeField] private AudioClip _damageSound;
 
     private Color _myColor;
     private bool _activeMovement = false;
     private Vector2 _direction;
-    private Coroutine _happySpriteCoroutine;
+    private Coroutine _happyRoutine;
 
-    private bool _isHappy = false;
 
     public override void Initialize()
     {
@@ -52,34 +44,45 @@ public class VDV : BossBase
         }
         while (Mathf.Abs(_direction.y) < 0.25f || Mathf.Abs(_direction.x) < 0.25f);
 
-        _speed = _startingSpeed;
+        _finalSpeed = _effectiveSpeed;
+        _velocity = _direction * _finalSpeed;
 
-        if (_slowed)
-            _effectiveSpeed = _speed * _slowMultiplier * _cornerMultiplier;
-        else
-            _effectiveSpeed = _speed * _cornerMultiplier;
-
-
-        _velocity = _direction * _effectiveSpeed;
         _activeMovement = true;
     }
 
-    public override void Update()
+    protected override void Update()
     {
         base.Update();
 
         if (!_activeMovement || WorldAreaManager.Instance == null) return;
 
-        if (_slowed)
-            _effectiveSpeed = _speed * _slowMultiplier * _cornerMultiplier;
-        else
-            _effectiveSpeed = _speed * _cornerMultiplier;
+        //use speed buff when happy
+        if (_isHappy) _finalSpeed = _effectiveSpeed * _cornerSpeedMultiplier;
+        else _finalSpeed = _effectiveSpeed;
 
-            // Always recompute velocity from direction + speed so tweaking _speed works live
-            _velocity = _direction * _effectiveSpeed;
+        //recompute velocity
+        _velocity = _direction * _finalSpeed;
 
+        //move
         transform.position += (Vector3)_velocity * Time.deltaTime;
 
+        //bounce off sides
+        CheckSides();
+    }
+
+    public override void Damage(float damage, bool useDamageVisuals = true)
+    {
+        base.Damage(damage, useDamageVisuals);
+
+        if (useDamageVisuals)
+        {
+            HapticFeedback.MediumFeedback();
+            AudioPlayer.PlayOneShot(_damageSound);
+        }
+    }
+
+    private void CheckSides()
+    {
         float halfPlayW = WorldAreaManager.Instance.playWidth * 0.5f;
         float halfPlayH = WorldAreaManager.Instance.playHeight * 0.5f;
 
@@ -93,7 +96,7 @@ public class VDV : BossBase
         if (p.x <= minX)
         {
             p.x = minX;
-            _direction.x = Mathf.Abs(_direction.x);   // bounce: update direction, not velocity
+            _direction.x = Mathf.Abs(_direction.x);
             SetRandomColor();
             AudioPlayer.PlayOneShot(_pongWallHitSound);
         }
@@ -131,49 +134,34 @@ public class VDV : BossBase
         transform.position = p;
     }
 
-    public override void Damage(float damage, bool showDamagedParticles = true)
-    {
-        base.Damage(damage);
-
-        if (_canBeDamaged && showDamagedParticles)
-        {
-            HapticFeedback.MediumFeedback();
-            AudioPlayer.PlayOneShot(_damageSound);
-            _hitParticles.Play();
-        }
-    }
-
     private void OnCornerHit()
     {
-        if (_isHappy) return;
-        _isHappy = true;
+        if (_happyRoutine != null)
+            StopCoroutine(_happyRoutine);
 
-        if (_happySpriteCoroutine != null)
-            StopCoroutine(_happySpriteCoroutine);
-
-        _happySpriteCoroutine = StartCoroutine(ResetAngrySprite());
-
-        _cornerMultiplier = _cornerSpeedMultiplier;
+        _happyRoutine = StartCoroutine(HappyRoutine());
     }
 
-    // ResetAngrySprite — only resets its own multiplier
-    private IEnumerator ResetAngrySprite()
+    private IEnumerator HappyRoutine()
     {
-        _spriteRenderer.sprite = _happySprite;
+        _isHappy = true;
+
+        //visuals / audio
+        SpriteRendr.sprite = _happySprite;
         _confettiParticles.Play();
         AudioPlayer.PlayOneShot(_celebrationSound);
 
         yield return new WaitForSeconds(2.5f);
 
-        _spriteRenderer.sprite = _angrySprite;
+        SpriteRendr.sprite = _angrySprite;
+
         _isHappy = false;
-        _cornerMultiplier = 1f;  // slow multiplier is untouched — still active if slowed
     }
 
     private void SetRandomColor()
     {
         _myColor = Random.ColorHSV(0f, 1f, 1f, 1f, 1f, 1f);
-        _spriteRenderer.color = _myColor;
+        SpriteRendr.color = _myColor;
         ParticleSystem.MainModule main = _hitParticles.main;
         main.startColor = new ParticleSystem.MinMaxGradient(_myColor);
     }
@@ -187,18 +175,19 @@ public class VDV : BossBase
 
     private void OnTriggerStay2D(Collider2D collision)
     {
+        //damage player
         if (collision.TryGetComponent<PlayerManager>(out var player))
             player.Damage();
     }
 
-    public override void Die()
+    protected override void Die()
     {
         base.Die();
-        GameObject go = Instantiate(_dieParticles, transform.position, Quaternion.identity);
 
-        AudioPlayer.PlayOneShot(_dieSound);
-        AudioPlayer.PlayOneShot(_dieSound2);
+        AudioPlayer.PlayOneShot(_deathSound);
+        AudioPlayer.PlayOneShot(_additionalDeathSound);
 
+        GameObject go = Instantiate(_deathParticlesPrefab, transform.position, Quaternion.identity);
         ParticleSystem.MainModule main = go.GetComponent<ParticleSystem>().main;
         main.startColor = new ParticleSystem.MinMaxGradient(_myColor);
 

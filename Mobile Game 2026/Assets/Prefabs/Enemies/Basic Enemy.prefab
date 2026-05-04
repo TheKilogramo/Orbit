@@ -5227,20 +5227,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79b70758102db604cb55546ea59ac52c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
-  _hp: 100
-  _maxHp: 100
-  HpText: {fileID: 5001560057980704988}
   Initialized: 0
-  SpriteRendr: {fileID: 9097907379880086025}
-  _fireParticles: {fileID: 6910491476994100928}
-  _coldParticles: {fileID: 816019250995189763}
-  _electricParticles: {fileID: 1592863358763903141}
-  _sfxElectricity: {fileID: 8300000, guid: 579a6148fc255f94383e1bf1fcc5d79d, type: 3}
-  _speed: 1.5
-  _hitParticles: {fileID: 6297305552449814345}
+  SpawnIndex: 0
+  _maxHp: 100
+  _hp: 100
+  _hpText: {fileID: 5001560057980704988}
+  _damageParticles: {fileID: 6297305552449814345}
   _deathParticlesPrefab: {fileID: 7931432138833068871, guid: f244a16b73931374b8a8d30f89e3eb44, type: 3}
   _deathSound: {fileID: 8300000, guid: d8525994aae7fb343b6c36c1514ff9be, type: 3}
-  SpawnIndex: 0
+  _speed: 1.5
+  SpriteRendr: {fileID: 9097907379880086025}
+  _meteorEffectParticles: {fileID: 6910491476994100928}
+  _iceGiantEffectParticles: {fileID: 816019250995189763}
+  _electricEffectParticles: {fileID: 1592863358763903141}
+  _sfxElectricity: {fileID: 8300000, guid: 579a6148fc255f94383e1bf1fcc5d79d, type: 3}
   _baseScale: 1
   _scalePerHp: 0.02
 --- !u!50 &2320411877114609101

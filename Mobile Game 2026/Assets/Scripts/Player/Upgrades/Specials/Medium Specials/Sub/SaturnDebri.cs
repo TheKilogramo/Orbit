@@ -22,7 +22,7 @@ public class SaturnDebri : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.TryGetComponent<EnemyHP>(out var enemy))
+        if (collision.TryGetComponent<EnemyBase>(out var enemy))
             enemy.Damage(_damage);
     }
 

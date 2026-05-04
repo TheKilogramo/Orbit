@@ -2,26 +2,28 @@ using UnityEngine;
 using System.Collections;
 using System;
 
-public abstract class BossBase : EnemyHP
+public abstract class BossBase : EnemyBase
 {
     public static event Action OnBossDefeated;
 
     [Header("Boss Entry Movement")]
-    public float _entryMoveDownAmount = 1.5f;
-    public float _entryDelay = 1f;
-    public float _entrySpeed = 5f; //speed of entry animatino downward movement
+    private float _entryMoveDownAmount = 1.5f;
+    private float _entryDelay = 1f;
+    private float _entrySpeed = 5f; //speed of entry animation downward movement
 
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
         StartCoroutine(BossEntrySequence());
-        HpText.text = ((int)_hp).ToString();
-        _canBeDamaged = false;
     }
 
-    public override void Die()
+    protected override void Die()
     {
-        base.Die();
-        OnBossDefeated?.Invoke();
+        //no base.Die() because it's different from regular enemies
+
+        InvokeOnDiedEvent();
+
+        OnBossDefeated?.Invoke(); //call boss defeated event
     }
 
     private IEnumerator BossEntrySequence()
@@ -47,6 +49,6 @@ public abstract class BossBase : EnemyHP
         Initialize();
     }
 
-    public virtual void Initialize() { Initialized = true; _canBeDamaged = true; }
+    public virtual void Initialize() { Initialized = true; _canBeDamaged = true; } //different from enemybase
     public virtual void BossEntryAnim() { }
 }

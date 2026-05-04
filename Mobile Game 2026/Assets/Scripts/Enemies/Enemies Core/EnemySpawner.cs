@@ -43,7 +43,7 @@ public class EnemySpawner : MonoBehaviour
     private int _scaledHpMax;
     private float _scaledSpawnRate;
     private int _activeEnemies = 0;
-    private Queue<EnemyHP> _pool = new();
+    private Queue<EnemyBase> _pool = new();
 
 
     private void OnDisable()
@@ -66,7 +66,7 @@ public class EnemySpawner : MonoBehaviour
 
         for (int i = 0; i < _initialPoolSize; i++)
         {
-            EnemyHP e = CreateEnemy();
+            EnemyBase e = CreateEnemy();
             _pool.Enqueue(e);
         }
     }
@@ -115,14 +115,14 @@ public class EnemySpawner : MonoBehaviour
         return lastKey.value + extra;
     }
 
-    private EnemyHP CreateEnemy()
+    private EnemyBase CreateEnemy()
     {
         GameObject obj = Instantiate(_enemyPrefab);
         obj.SetActive(false);
-        return obj.GetComponent<EnemyHP>();
+        return obj.GetComponent<EnemyBase>();
     }
 
-    private EnemyHP GetEnemyFromPool()
+    private EnemyBase GetEnemyFromPool()
     {
         if (_pool.Count > 0)
             return _pool.Dequeue();
@@ -130,7 +130,7 @@ public class EnemySpawner : MonoBehaviour
         return CreateEnemy();
     }
 
-    public void ReturnEnemyToPool(EnemyHP enemy)
+    public void ReturnEnemyToPool(EnemyBase enemy)
     {
         _activeEnemies = Mathf.Max(_activeEnemies - 1, 0);
         enemy.gameObject.SetActive(false);
@@ -143,13 +143,13 @@ public class EnemySpawner : MonoBehaviour
 
         Vector3 spawnPos = GetRandomPointOnRectangleEdge();
 
-        EnemyHP e = GetEnemyFromPool();
+        EnemyBase e = GetEnemyFromPool();
         e.transform.position = spawnPos;
         e.gameObject.SetActive(true);
         _activeEnemies++;
 
         int newHp = Random.Range(_scaledHpMin, _scaledHpMax + 1);
-        e.Initialize(_player.position, newHp);
+        e.Initialize(newHp);
     }
 
     private Vector3 GetRandomPointOnRectangleEdge()
@@ -188,10 +188,11 @@ public class EnemySpawner : MonoBehaviour
 
     private void ReturnAllEnemiesToPool()
     {
-        EnemyHP[] activeInScene = FindObjectsByType<EnemyHP>(FindObjectsSortMode.None);
-        foreach (EnemyHP e in activeInScene)
+        EnemyBase[] activeInScene = FindObjectsByType<EnemyBase>(FindObjectsSortMode.None);
+
+        foreach (EnemyBase e in activeInScene)
         {
-            if (e.gameObject.activeSelf)
+            if (e.gameObject.activeSelf && e is not BossBase)
                 ReturnEnemyToPool(e);
         }
     }

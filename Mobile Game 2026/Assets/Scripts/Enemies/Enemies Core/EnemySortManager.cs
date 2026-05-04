@@ -5,7 +5,7 @@ public class EnemySortManager : MonoBehaviour
 {
     public static EnemySortManager Instance;
 
-    private List<BasicEnemy> activeEnemies = new();
+    private List<EnemyBase> activeEnemies = new();
     private int nextSpawnIndex = 0;
 
     void Awake()
@@ -13,7 +13,7 @@ public class EnemySortManager : MonoBehaviour
         Instance = this;
     }
 
-    public void RegisterEnemy(BasicEnemy e)
+    public void RegisterEnemy(EnemyBase e)
     {
         if (e == null) return;
 
@@ -24,7 +24,7 @@ public class EnemySortManager : MonoBehaviour
         UpdateSortingOrders();
     }
 
-    public void UnregisterEnemy(BasicEnemy e)
+    public void UnregisterEnemy(EnemyBase e)
     {
         if (e == null) return;
 
@@ -44,7 +44,7 @@ public class EnemySortManager : MonoBehaviour
 
         for (int i = 0; i < activeEnemies.Count; i++)
         {
-            BasicEnemy e = activeEnemies[i];
+            EnemyBase e = activeEnemies[i];
 
             int order = e.SpawnIndex * 2;
 

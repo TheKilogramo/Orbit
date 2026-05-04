@@ -8,6 +8,7 @@ public class ElectricEffect : EffectBase
     [SerializeField] private int _maxChainCount = 3;
     [SerializeField] private float _chainDamage = 2f;
     [SerializeField] private float _chainRadius = 3f;
+    [SerializeField] private float _chainDelay = 0.05f;
 
     [Header("Visuals")]
     [SerializeField] private LineRenderer _lightningLinePrefab;
@@ -16,7 +17,7 @@ public class ElectricEffect : EffectBase
     [SerializeField] private Color _lightningColor;
 
     private List<Orbiter> _subscribedOrbiters = new();
-    private List<GameObject> _instantiatedLigthnings;
+    private List<GameObject> _instantiatedLightings = new();
 
     public override void Initialize()
     {
@@ -42,7 +43,7 @@ public class ElectricEffect : EffectBase
         OrbitManager.Instance.OnOrbiterAdded -= SubscribeOrbiter;
 
         //destroy all lighting objects
-        foreach (GameObject go in _instantiatedLigthnings)
+        foreach (GameObject go in _instantiatedLightings)
             Destroy(go);
 
         StopAllCoroutines();
@@ -58,22 +59,22 @@ public class ElectricEffect : EffectBase
         orbiter.SetEffect(SpecialEffect.Electric);
     }
 
-    private void OnOrbiterHit(EnemyHP firstEnemy)
+    private void OnOrbiterHit(EnemyBase firstEnemy)
     {
         StartCoroutine(ChainLightning(firstEnemy));
     }
 
-    private IEnumerator ChainLightning(EnemyHP firstEnemy)
+    private IEnumerator ChainLightning(EnemyBase firstEnemy)
     {
-        List<EnemyHP> alreadyHit = new() { firstEnemy };
-        EnemyHP current = firstEnemy;
+        List<EnemyBase> alreadyHit = new() { firstEnemy };
+        EnemyBase current = firstEnemy;
 
         for (int i = 0; i < _maxChainCount; i++)
         {
             //have enemy script show electricity particles / sound
             current.SetEffect(SpecialEffect.Electric);
 
-            EnemyHP next = GetClosestEnemy(current.transform.position, alreadyHit);
+            EnemyBase next = GetClosestEnemy(current.transform.position, alreadyHit);
             if (next == null) break;
 
             //deal damage
@@ -81,23 +82,22 @@ public class ElectricEffect : EffectBase
             alreadyHit.Add(next);
 
             //draw lightning between current and next
-            StartCoroutine(DrawLightning(current.transform.position, next.transform.position));
+            yield return StartCoroutine(DrawLightning(current.transform.position, next.transform.position));
+            yield return new WaitForSeconds(_chainDelay);
 
             current = next;
-
-            yield return null;
         }
     }
 
-    private EnemyHP GetClosestEnemy(Vector3 origin, List<EnemyHP> exclude)
+    private EnemyBase GetClosestEnemy(Vector3 origin, List<EnemyBase> exclude)
     {
         Collider2D[] hits = Physics2D.OverlapCircleAll(origin, _chainRadius);
-        EnemyHP closest = null;
+        EnemyBase closest = null;
         float closestDist = float.MaxValue;
 
         foreach (var hit in hits)
         {
-            if (!hit.TryGetComponent<EnemyHP>(out var enemy)) continue;
+            if (!hit.TryGetComponent<EnemyBase>(out var enemy)) continue;
             if (exclude.Contains(enemy)) continue;
 
             float dist = Vector3.Distance(origin, enemy.transform.position);
@@ -114,7 +114,7 @@ public class ElectricEffect : EffectBase
     private IEnumerator DrawLightning(Vector3 from, Vector3 to)
     {
         LineRenderer line = Instantiate(_lightningLinePrefab);
-        _instantiatedLigthnings.Add(line.gameObject);
+        _instantiatedLightings.Add(line.gameObject);
 
         line.startColor = _lightningColor;
         line.endColor = _lightningColor;
@@ -176,7 +176,7 @@ public class ElectricEffect : EffectBase
             yield return null;
         }
 
-        _instantiatedLigthnings.Remove(line.gameObject);
+        _instantiatedLightings.Remove(line.gameObject);
         Destroy(line.gameObject);
     }
 }

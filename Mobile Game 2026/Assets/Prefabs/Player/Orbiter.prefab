@@ -110,7 +110,13 @@ MonoBehaviour:
   _damageInterval: 0.25
   _sr: {fileID: 859918125109756853}
   _meteorParticles: {fileID: 7290588649140944218}
-  _electricityParticles: {fileID: 2764710142530868847}
+  _electricParticles: {fileID: 2764710142530868847}
+  _defaultSprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
+  _meteorSprite: {fileID: 21300000, guid: 3bae9643a0f0f1547aed4a501b69b05a, type: 3}
+  _iceGiantSprite: {fileID: 21300000, guid: 4bbfaa2171cad68478825102a108b936, type: 3}
+  _defaultColor: {r: 1, g: 1, b: 1, a: 1}
+  _meteorColor: {r: 0.6132076, g: 0.34875694, b: 0.0028924954, a: 1}
+  _iceGiantColor: {r: 0, g: 0.7815788, b: 1, a: 1}
 --- !u!58 &6095063764554542847
 CircleCollider2D:
   m_ObjectHideFlags: 0
